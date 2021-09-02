@@ -17,6 +17,8 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import TablePagination from '@material-ui/core/TablePagination';
 import Modal from "../modal/modal"
 import VisitorTable from "../visitorTable/table"
+import UpdateTenant from "../Forms/UpdateTenant"
+import Warning from "../DeleteWarning/Warning"
 
 const useRowStyles = makeStyles({
   root: {
@@ -68,10 +70,14 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
           <div style={{display: "flex", width: 130, float:"right", justifyContent: "space-between"}}>
           <div  style={{ width: 60, display: "flex", alignItems: "center",justifyContent: "center", height: 25, cursor: "pointer", borderRadius: 7, backgroundColor: "#00000025", color: "#36466F" }}>
-                        <p style={{ fontWeight: "bold" }}>Update</p>
+                        <p style={{ fontWeight: "bold" }}>
+                          <Modal Component={UpdateTenant} title="Update Tenant" buttonTitle="Update"/>
+                        </p>
                     </div>
           <div  style={{ width: 60, display: "flex", alignItems: "center",justifyContent: "center", height: 25, cursor: "pointer", borderRadius: 7, backgroundColor: "#00000025", color: "red" }}>
-                        <p style={{ fontWeight: "bold" }}>Delete</p>
+                        <p style={{ fontWeight: "bold" }}>
+                        <Modal Component={Warning} buttonTitle="Delete"/>
+                        </p>
                     </div>
           </div>
                     

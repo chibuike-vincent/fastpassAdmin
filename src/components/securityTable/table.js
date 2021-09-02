@@ -1,76 +1,158 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import TablePagination from '@material-ui/core/TablePagination';
+import Modal from "../modal/modal"
+import VisitorTable from "../visitorTable/table"
+import UpdateSecurity from "../Forms/UpdateSecurity"
 
-const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-];
-
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
-
-const useStyles = makeStyles({
+const useRowStyles = makeStyles({
   root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight: 440,
+    '& > *': {
+      borderBottom: 'unset',
+    },
   },
 });
 
-export default function StickyHeadTable() {
-  const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+function createData(name, calories, fat, carbs, protein, price) {
+  return {
+    name,
+    calories,
+    fat,
+    carbs,
+    protein,
+    price,
+    history: [
+      { date: '2020-01-05', customerId: '11091700', amount: 3 },
+      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
+    ],
+  };
+}
+
+function Row(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+  const classes = useRowStyles();
+  
+
+  return (
+    <React.Fragment>
+      <TableRow className={classes.root}>
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="right">{row.calories}</TableCell>
+        <TableCell align="right">{row.fat}</TableCell>
+        <TableCell align="right">{row.carbs}</TableCell>
+        <TableCell align="right">{row.protein}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+          <div style={{display: "flex", width: 130, float:"right", justifyContent: "space-between"}}>
+          <div  style={{ width: 60, display: "flex", alignItems: "center",justifyContent: "center", height: 25, cursor: "pointer", borderRadius: 7, backgroundColor: "#00000025", color: "#36466F" }}>
+                        <p style={{ fontWeight: "bold" }}>
+                        <Modal Component={UpdateSecurity} title="Update Security" buttonTitle="Update"/>
+                        </p>
+                    </div>
+          <div  style={{ width: 60, display: "flex", alignItems: "center",justifyContent: "center", height: 25, cursor: "pointer", borderRadius: 7, backgroundColor: "#00000025", color: "red" }}>
+                        <p style={{ fontWeight: "bold" }}>Delete</p>
+                    </div>
+          </div>
+                    
+            <Box margin={1}>
+              <div style={{display: "flex"}}>
+              <h2>
+                Visitors 
+              </h2>
+              <div style={{color:"blue", fontSize: 12, cursor:"pointer", marginTop:14, marginLeft: 5}}><Modal Component={VisitorTable} buttonTitle="View All" width="90%"/></div>
+              </div>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Customer</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Total price ($)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                    
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.date}>
+                      <TableCell component="th" scope="row">
+                        {historyRow.date}
+                      </TableCell>
+                      <TableCell>{historyRow.customerId}</TableCell>
+                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell align="right">
+                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+      
+    </React.Fragment>
+  );
+}
+
+Row.propTypes = {
+  row: PropTypes.shape({
+    calories: PropTypes.number.isRequired,
+    carbs: PropTypes.number.isRequired,
+    fat: PropTypes.number.isRequired,
+    history: PropTypes.arrayOf(
+      PropTypes.shape({
+        amount: PropTypes.number.isRequired,
+        customerId: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    protein: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+];
+
+export default function CollapsibleTable() {
+    const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(3);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -80,42 +162,30 @@ export default function StickyHeadTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Fat&nbsp;(g)</TableCell>
+            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+
+        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
+                <Row key={row.name} row={row} />
               );
             })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          
+        </TableBody>
+      </Table>
+
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
@@ -125,6 +195,6 @@ export default function StickyHeadTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </TableContainer>
   );
 }

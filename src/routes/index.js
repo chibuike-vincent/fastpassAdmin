@@ -21,7 +21,9 @@ import Security from "../pages/security";
 import CreateTenants from "../pages/createTenants";
 import CreateSecurity from "../pages/createSecurity";
 import Settings from "../pages/settings";
-import Visitors from "../pages/visitors"
+import Visitors from "../pages/visitors";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 
 export default function Routes() {
@@ -43,7 +45,9 @@ export default function Routes() {
               {/* Public routes */}
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
-            <Route exact path="/sign_up" component={SignUp} />
+            <Route exact path="/signup" component={SignUp} />
+            <Route exact path="/forgotpassword" component={ForgotPassword} />
+            <Route exact path="/resetpassword/:pin" component={ResetPassword} />
           </Switch>
         </Router>
       </div>

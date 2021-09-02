@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         borderRadius: 7,
         width: "50vw",
-        height: '90vh',
         textAlign: "center",
         overflow: "scroll"
     },

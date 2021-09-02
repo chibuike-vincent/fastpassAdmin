@@ -1,9 +1,10 @@
 import React from 'react'
+import Setting from "../components/SettingsComponent/settings"
 
 function Settings() {
     return (
         <div>
-            <h1>Settings page</h1>
+            <Setting />
         </div>
     )
 }

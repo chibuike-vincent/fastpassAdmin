@@ -3,6 +3,9 @@ import Card from "../components/card/card"
 import Table from "../components/tenantTable/table"
 import Modal from "../components/modal/modal"
 import Form from "../components/Forms/addTenant"
+import DateRange from "../components/DateRange/DatePicker"
+import SearchBar from "../components/SearchComponent/SearchBar"
+import { Divider } from '@material-ui/core'
 
 function Tenants() {
     return (
@@ -14,7 +17,15 @@ function Tenants() {
                 </div>
                 <Modal Component={Form} buttonTitle="Add Tenant" title="Add Tenant" button/>
             </div>
+
+            <div style={{width: "100%", display: "flex", justifyContent:"space-between"}}>
+            <div style={{width:"100%"}}>
+            <SearchBar />
+            </div>
+            </div>
+            <div style={{marginTop: 10}}>
             <Table />
+            </div>
         </div>
     )
 }
