@@ -72,22 +72,6 @@ function Chart(){
         />
         </div>
 
-        <div style={{width: "80%",  marginTop: 20, backgroundColor:"white", marginLeft:"10%" }}>
-        <Line
-          data={TenantState}
-          options={{
-            title:{
-              display:true,
-              text:'Average visitors per month',
-              fontSize:20
-            },
-            legend:{
-              display:true,
-              position:'right'
-            }
-          }}
-        />
-        </div>
       </div>
     );
   }

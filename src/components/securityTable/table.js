@@ -57,12 +57,12 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          {row.firstName}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell align="right">{row.lastName}</TableCell>
+        <TableCell align="right">{row.email}</TableCell>
+        <TableCell align="right">{row.phone}</TableCell>
+        <TableCell align="right">{row.gender}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -86,26 +86,39 @@ function Row(props) {
               <div style={{color:"blue", fontSize: 12, cursor:"pointer", marginTop:14, marginLeft: 5}}><Modal Component={VisitorTable} buttonTitle="View All" width="90%"/></div>
               </div>
               <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+              <TableHead>
+                  <TableRow >
+                    <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell align="right">Phone</TableCell>
+                    <TableCell align="right">Gender</TableCell>
+                    <TableCell align="right">House No</TableCell>
+                    <TableCell align="right">Status</TableCell>
+                    <TableCell align="right">Visit Date</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                     
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
+                {row.visitors.map((visitor) => (
+                    <TableRow key={visitor.email} >
                       <TableCell component="th" scope="row">
-                        {historyRow.date}
+                        {visitor.fullname}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell>{visitor.email}</TableCell>
+                      <TableCell align="right">{visitor.phone_no}</TableCell>
                       <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                        {visitor.gender}
                       </TableCell>
+                      <TableCell align="right">
+                        {visitor.house_no}
+                      </TableCell>
+                      <TableCell align="right">
+                        {visitor.status}
+                      </TableCell>
+                      <TableCell align="right">
+                        {visitor.date}
+                      </TableCell>
+                     
                     </TableRow>
                   ))}
                 </TableBody>
@@ -119,36 +132,104 @@ function Row(props) {
   );
 }
 
-Row.propTypes = {
-  row: PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbs: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    history: PropTypes.arrayOf(
-      PropTypes.shape({
-        amount: PropTypes.number.isRequired,
-        customerId: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
-      }),
-    ).isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    protein: PropTypes.number.isRequired,
-  }).isRequired,
-};
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
+  {
+    firstName:"John",
+    lastName: "Doe",
+    email:"johndoe@gmail.com",
+    phone: "09023232323",
+    gender: "Male",
+    visitors: [
+      {
+        fullname: "Emmanuel Doe",
+        house_no: "House 4 unit 3",
+        phone_no: "09045434323",
+        email: "emmanel@gmail.com",
+        gender: "Male",
+        status: "active",
+        date: "3-09-2021",
+        security: "Musa,",
+        Message: ""
+      },
+      {
+        fullname: "Cynthia Doe",
+        house_no: "House 4 unit 3",
+        phone_no: "07045789065",
+        email: "cynthia@gmail.com",
+        gender: "Female",
+        status: "checkedout",
+        date: "3-09-2021",
+        security: "Musa,",
+        Message: "Let her go I am ok"
+      }
+    ]
+  },
+  {
+    firstName:"Vincent", 
+    lastName: "Kai",
+    email:"vincent@gmail.com",
+    phone: "09023232323",
+    gender: "Male",
+    visitors: [
+      {
+        fullname: "Micheal Doe",
+        house_no: "House 2 unit 5",
+        phone_no: "09045434323",
+        email: "micheal@gmail.com",
+        gender: "Male",
+        status: "checkedOut",
+        date: "3-09-2021",
+        security: "Musa,",
+        Message: "Let him go I am fine"
+      },
+      {
+        fullname: "Jenny isreal",
+        house_no: "House 2 unit 5",
+        phone_no: "07045789065",
+        email: "jenny@gmail.com",
+        gender: "Female",
+        status: "active",
+        date: "3-09-2021",
+        security: "Musa,",
+        Message: ""
+      }
+    ]
+  },
+  {
+    firstName:"Elon",
+    lastName: "musk",
+    email:"elon@gmail.com",
+    phone: "09023232323",
+    gender: "Male",
+    visitors: [
+      {
+        fullname: "Sunday Smith",
+        house_no: "House 1 unit 9",
+        phone_no: "09045434323",
+        email: "sunday@gmail.com",
+        gender: "Male",
+        status: "Checkedout",
+        date: "3-09-2021",
+        security: "Musa,",
+        Message: "His visit was harmless"
+      },
+      {
+        fullname: "Miracle Effiong",
+        house_no: "House 1 unit 9",
+        phone_no: "07045789065",
+        email: "miracle@gmail.com",
+        gender: "Female",
+        status: "active",
+        date: "3-09-2021",
+        security: "Musa,",
+        Message: ""
+      }
+    ]
+  },
+
+]
+
 
 export default function CollapsibleTable() {
     const [page, setPage] = React.useState(0);
@@ -168,18 +249,18 @@ export default function CollapsibleTable() {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell>First Name</TableCell>
+            <TableCell align="right">Last Name</TableCell>
+            <TableCell align="right">Email</TableCell>
+            <TableCell align="right">Phone Number</TableCell>
+            <TableCell align="right">Gender</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
 
         {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <Row key={row.name} row={row} />
+                <Row key={row.email} row={row} />
               );
             })}
           

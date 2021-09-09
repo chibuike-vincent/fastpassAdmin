@@ -1,6 +1,7 @@
 import React from 'react'
 import { Paper } from '@material-ui/core'
 import backgroundImage from "../../images/Entrance_gate.jpg";
+import LogoImage from "../../images/fastPassLogo.jpeg";
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
@@ -126,7 +127,7 @@ function ResetPassword() {
                 <Paper className={classes.paper}>
                     <div className={classes.logoContainer}>
                     <div className={classes.logo}>
-                            <AiTwotoneSecurityScan size={50} />
+                    <img src={LogoImage}  alt="logo" style={{width:"100%", height:"100%", borderRadius:"100%"}} />
                         </div>
                         <p>
                             <span className={classes.logoTextOne}>Fast</span><span className={classes.logoTexttwo}>Pass</span>
