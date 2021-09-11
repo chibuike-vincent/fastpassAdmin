@@ -8,6 +8,9 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { Link, useHistory } from "react-router-dom";
+import {AdminSignUp} from "../../businessLogic";
+import { ShowMessage, type } from "../Toaster";
+import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -123,6 +126,72 @@ const useStyles = makeStyles((theme) => ({
 function SignUp() {
     const classes = useStyles();
     const history = useHistory()
+    const [processing, setProcessing] = React.useState(false)
+    const [values, setValues] = React.useState({
+        fullname: "",
+        email:"",
+        address: "",
+        phone:"",
+        whoYouAre: '',
+        total_rooms_or_block: "",
+        password: '',
+        repeatPassword: ""
+      });
+
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+      };
+    
+      const handleSubmit = async() => {
+        try {
+            setProcessing(true)
+           const res = await AdminSignUp({
+            fullname: values.fullname,
+            email:values.email,
+            address: values.address,
+            phone:values.phone,
+            whoYouAre: values.whoYouAre,
+            total_rooms_or_block: values.total_rooms_or_block,
+            password: values.password,
+            repeatPassword: values.repeatPassword
+          });
+          if(res.data.message){
+            setProcessing(false)
+            //dispatch( saveAccessToken({payload: res.token}))
+            ShowMessage(type.DONE, res.data.message);
+            history.push('/login')
+          }
+        } catch (err) {
+            setProcessing(false)
+          console.log(err)
+        }
+      }
+
+    //const [whoYouAre] = React.useState("")
+
+    const userType = [
+        {
+            value:"",
+            label:"Select"
+        },
+        {
+            value:"Residential",
+            label:"Residential"
+        },
+        {
+            value:"Hotel",
+            label:"Hotel"
+        },
+        {
+            value: "Estate",
+            label: "Estate"
+        },
+        {
+            value: "Corporate office",
+            label: "Corporate office"
+        }
+    ]
     return (
         <div className={classes.container}>
             <div className={classes.formContainer}>
@@ -131,32 +200,116 @@ function SignUp() {
                         <h1>Create Account</h1>
                     </div>
                     <div className={classes.form}>
-                    <TextField id="outlined-basic" type="text" label="Full Name (Individual or Organization)" variant="outlined" className={classes.emailInput}/>
-                    <TextField id="outlined-basic" type="email" label="Email" variant="outlined" className={classes.emailInput}/>
-                    <TextField id="outlined-basic" type="text" label="Phone" variant="outlined" className={classes.emailInput}/>
-                    <TextField id="outlined-basic" type="text" label="Address" variant="outlined" className={classes.emailInput}/>
+                    <TextField 
+                    id="outlined-basic" 
+                    type="text" 
+                    label="Full Name (Individual or Organization)" 
+                    variant="outlined" className={classes.emailInput}
+                    value={values.fullname} 
+                    onChange={handleChange('fullname')} 
+                    />
+                    <TextField 
+                    id="outlined-basic" 
+                    type="email" 
+                    label="Email" 
+                    variant="outlined" 
+                    className={classes.emailInput}
+                    value={values.email} 
+                    onChange={handleChange('email')} 
+                    />
+                    <TextField 
+                    id="outlined-basic" 
+                    type="text" 
+                    label="Phone" 
+                    variant="outlined" 
+                    className={classes.emailInput}
+                    value={values.phone} 
+                    onChange={handleChange('phone')} 
+                    />
+                    <TextField 
+                    id="outlined-basic" 
+                    type="text" 
+                    label="Address" 
+                    variant="outlined" 
+                    className={classes.emailInput}
+                    value={values.address} 
+                    onChange={handleChange('address')} 
+                    />
                     <FormControl variant="outlined" className={classes.formControl} className={classes.emailInput}>
                         <InputLabel htmlFor="outlined-age-native-simple">Who you are</InputLabel>
                         <Select
                         native
                         label="Who you are"
+                        value={values.whoYouAre} 
+                        onChange={handleChange('whoYouAre')} 
                         inputProps={{
                             name: 'type',
                             id: 'outlined-age-native-simple',
                         }}
                         
                         >
-                        <option aria-label="Select" value="" />
-                        <option value={10}>Residential</option>
-                        <option value={20}>Hotel</option>
-                        <option value={30}>Estate</option>
-                        <option value={30}>Corporate office</option>
+                            {
+                                userType.map(val => {
+                                    return (
+                                        <option aria-label={val.label} value={val.value} />
+                                    )
+                                })
+                            }
+                        
                         </Select>
                         </FormControl>
-                    <TextField id="outlined-basic" type="password" label="Password" variant="outlined" className={classes.emailInput}/>
-                    <TextField id="outlined-basic" type="password" label="Repeat Password" variant="outlined" className={classes.passwordInput}/>
+                        {values.whoYouAre === "Estate" ? (
+                            <TextField 
+                            id="outlined-basic" 
+                            type="number" label="Total Blocks" 
+                            variant="outlined" 
+                            className={classes.emailInput}
+                            value={values.total_rooms_or_block} 
+                            onChange={handleChange('total_rooms_or_block')} 
+                            />
+                        ) : values.whoYouAre === "Hotel" ? (
+                            <TextField 
+                            id="outlined-basic" 
+                            type="number" 
+                            label="Total Rooms" 
+                            variant="outlined" 
+                            className={classes.emailInput}
+                            value={values.total_rooms_or_block} 
+                            onChange={handleChange('total_rooms_or_block')} 
+                            />
+                        ) : "" }
+                    <TextField 
+                    id="outlined-basic" 
+                    type="password" 
+                    label="Password" 
+                    variant="outlined" 
+                    className={classes.emailInput}
+                    value={values.password} 
+                    onChange={handleChange('password')} 
+                    />
+                    <TextField 
+                    id="outlined-basic" 
+                    type="password" 
+                    label="Repeat Password" 
+                    variant="outlined" 
+                    className={classes.passwordInput}
+                    value={values.repeatPassword} 
+                    onChange={handleChange('repeatPassword')} 
+                    />
                     </div>
-                    <Button onClick={() => history.push("/login")} className={classes.button}>Sign Up</Button>
+                    <Button 
+                    onClick={() => handleSubmit()} 
+                    className={classes.button}>
+                        {processing ? (
+                            <Loader
+                            type="TailSpin"
+                            color="#00BFFF"
+                            height={40}
+                            width={40}
+                          />
+                        ) : "Sign Up"}
+                        
+                    </Button>
                     <h5> Already have account? <span className={classes.signUp} onClick={() => history.push("/login")}>Sign In!</span></h5>
 
                     <p className={classes.footer}> &copy; 2021 FastPass Inc | <span className={classes.footerContactUs}>Contact Us</span></p>

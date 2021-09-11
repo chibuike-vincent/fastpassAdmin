@@ -5,8 +5,11 @@ import LogoImage from "../../images/fastPassLogo.jpeg";
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-import { Link, useHistory } from "react-router-dom";
+import { Link,useParams, useHistory } from "react-router-dom";
 import {AiTwotoneSecurityScan} from "react-icons/ai"
+import {resetPassword} from "../../businessLogic";
+import { ShowMessage, type } from "../Toaster";
+import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -121,6 +124,44 @@ const useStyles = makeStyles((theme) => ({
 function ResetPassword() {
     const classes = useStyles();
     const history = useHistory()
+    const [processing, setProcessing] = React.useState(false)
+    const {pin} = useParams()
+    const [values, setValues] = React.useState({
+        newPassword: '',
+        repeatPassword:""
+      });
+
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+      };
+
+    const handleSubmit = async() => {
+        try {
+            setProcessing(true)
+           const response = await resetPassword({
+                pin,
+                password: values.newPassword,
+                confirmPassword:values.repeatPassword
+          });
+          console.log(response)
+            if (response.data.message) {
+                setProcessing(false)
+                ShowMessage(type.DONE, response.data.message);
+                history.push("/login")
+              } else {
+                setProcessing(false)
+                ShowMessage(type.ERROR, response.data);
+              }
+           
+            
+          
+        } catch (err) {
+            setProcessing(false)
+          console.log(err)
+        }
+      }
+
     return (
         <div className={classes.container}>
             <div className={classes.formContainer}>
@@ -135,10 +176,34 @@ function ResetPassword() {
                         <h3>Reset Password</h3>
                     </div>
                     <div className={classes.form}>
-                    <TextField id="outlined-basic" type="password" label="New Password" variant="outlined" className={classes.passwordInput}/>
-                    <TextField id="outlined-basic" type="password" label="Repeat Password" variant="outlined" className={classes.passwordInput}/>
+                    <TextField 
+                    id="outlined-basic" 
+                    type="password" 
+                    label="New Password" 
+                    variant="outlined" 
+                    className={classes.passwordInput}
+                    value={values.newPassword} 
+                    onChange={handleChange('newPassword')} 
+                    />
+                    <TextField 
+                    id="outlined-basic" 
+                    type="password" 
+                    label="Repeat Password" 
+                    variant="outlined" 
+                    className={classes.passwordInput}
+                    value={values.repeatPassword} 
+                    onChange={handleChange('repeatPassword')} 
+                    />
                     </div>
-                    <Button onClick={() => history.push("/login")} className={classes.button}>Reset</Button>
+                    <Button onClick={() => handleSubmit()} className={classes.button}>
+                    {processing ? (
+                            <Loader
+                            type="TailSpin"
+                            color="#00BFFF"
+                            height={40}
+                            width={40}
+                          />
+                        ) : "Reset"}</Button>
 
                     <p className={classes.footer}>&copy; 2021 FastPass Inc | <span className={classes.footerContactUs}>Contact Us</span></p>
                 </Paper>

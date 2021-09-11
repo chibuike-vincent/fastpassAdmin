@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect,useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,6 +14,8 @@ import {AiTwotoneSecurityScan} from "react-icons/ai"
 
 import { Link, useHistory } from "react-router-dom";
 import {navigations, Secondnavigations} from "../routes/navigations"
+
+import {getCurrentUser} from "../../src/businessLogic"
 
 const drawerWidth = 180;
 
@@ -79,6 +81,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MainLayout({children}) {
   const classes = useStyles();
+  const [user, setUser] = useState({})
+
+  useEffect(() => {
+    const activeUser = async() => {
+      const user = await getCurrentUser()
+      setUser(user)
+    }
+    activeUser()
+  }, [])
+
+ 
 
   return (
     <div className={classes.root}>
@@ -86,7 +99,7 @@ export default function MainLayout({children}) {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h5" noWrap style={{fontWeight:"bold"}}>
-            Brains & Hammers
+            {user && user.data ? user.data.userData.fullname : ""}
           </Typography>
         </Toolbar>
       </AppBar>

@@ -7,6 +7,9 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import {AiTwotoneSecurityScan} from "react-icons/ai"
 import { Link, useHistory } from "react-router-dom";
+import {adminLogin} from "../../businessLogic";
+import { ShowMessage, type } from "../Toaster";
+import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -71,6 +74,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor:"red", 
         width:"80%",
         color:'white',
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
         '&:hover': {
             backgroundColor:"red",
         }
@@ -120,6 +126,37 @@ const useStyles = makeStyles((theme) => ({
 function Login() {
     const classes = useStyles();
     const history = useHistory()
+    const [processing, setProcessing] = React.useState(false)
+    const [values, setValues] = React.useState({
+        email: '',
+        password: '',
+      });
+
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+      };
+
+
+    const handleSubmit = async() => {
+        try {
+            setProcessing(true)
+           const res = await adminLogin({
+            email: values.email,
+            password: values.password,
+          });
+          if(res.data.message){
+            setProcessing(false)
+            //dispatch( saveAccessToken({payload: res.token}))
+            ShowMessage(type.DONE, res.data.message);
+            history.push('/dashboard')
+          }
+        } catch (err) {
+            setProcessing(false)
+          console.log(err)
+        }
+      }
+
     return (
         <div className={classes.container}>
             <div className={classes.formContainer}>
@@ -134,11 +171,35 @@ function Login() {
                         <h3>Login</h3>
                     </div>
                     <div className={classes.form}>
-                    <TextField id="outlined-basic" type="email" label="Email" variant="outlined" className={classes.emailInput}/>
-                    <TextField id="outlined-basic" type="password" label="Password" variant="outlined" className={classes.passwordInput}/>
+                    <TextField 
+                    id="outlined-basic" 
+                    type="email" 
+                    value={values.email} 
+                    onChange={handleChange('email')} 
+                    label="Email" 
+                    variant="outlined" 
+                    className={classes.emailInput}
+                    />
+                    <TextField 
+                    id="outlined-basic" 
+                    type="password" 
+                    value={values.password} 
+                    onChange={handleChange('password')} 
+                    label="Password" 
+                    variant="outlined" 
+                    className={classes.passwordInput}
+                    />
                     <h5 className={classes.forgotPassword} onClick={() => history.push("/forgotpassword")}>Forgot password?</h5>
                     </div>
-                    <Button className={classes.button} onClick={() => history.push("/dashboard")}>Log In</Button>
+                    <Button className={classes.button} onClick={() => handleSubmit()}>
+                        {processing ? (
+                            <Loader
+                            type="TailSpin"
+                            color="#00BFFF"
+                            height={40}
+                            width={40}
+                          />
+                        ) : "Log In"}</Button>
                     <h5>New to FastPass? <span className={classes.signUp} onClick={() => history.push("/signup")}>Sign Up!</span></h5>
 
                     <p className={classes.footer}> &copy; 2021 FastPass Inc | <span className={classes.footerContactUs}>Contact Us</span></p>

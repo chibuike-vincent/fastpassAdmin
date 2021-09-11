@@ -58,7 +58,7 @@ export default function TransitionsModal({ Component, buttonTitle, title, width,
                 <Fade in={open}>
                     <div className={classes.paper} style={{ width: width ? width : "50%" }}>
                         <h2 id="transition-modal-title">{title}</h2>
-                        <Component />
+                        <Component handleClose={handleClose}/>
                     </div>
                 </Fade>
             </Modal>

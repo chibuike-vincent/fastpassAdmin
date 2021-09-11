@@ -7,6 +7,9 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import {AiTwotoneSecurityScan} from "react-icons/ai"
 import { Link, useHistory } from "react-router-dom";
+import { ShowMessage, type } from "../Toaster";
+import Loader from "react-loader-spinner";
+import {forgortPassword} from "../../businessLogic";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -121,6 +124,34 @@ const useStyles = makeStyles((theme) => ({
 function ForgotPassword() {
     const classes = useStyles();
     const history = useHistory()
+    const [processing, setProcessing] = React.useState(false)
+    const [values, setValues] = React.useState({
+        email: '',
+      });
+
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+      };
+
+    const handleSubmit = async() => {
+        try {
+            setProcessing(true)
+           const res = await forgortPassword({
+            email: values.email,
+          });
+          if(res.data){
+            setProcessing(false)
+            //dispatch( saveAccessToken({payload: res.token}))
+            //ShowMessage(type.DONE, res.data.message);
+            
+          }
+        } catch (err) {
+            setProcessing(false)
+          console.log(err)
+        }
+      }
+
     return (
         <div className={classes.container}>
             <div className={classes.formContainer}>
@@ -135,9 +166,26 @@ function ForgotPassword() {
                         <h3>Request Forgot Password Token</h3>
                     </div>
                     <div className={classes.form}>
-                    <TextField id="outlined-basic" type="email" label="Enter Email Address" variant="outlined" className={classes.emailInput}/>
+                    <TextField 
+                    id="outlined-basic" 
+                    type="email" 
+                    label="Enter Email Address" 
+                    variant="outlined" 
+                    className={classes.emailInput}
+                    value={values.email} 
+                    onChange={handleChange('email')} 
+                    />
                     </div>
-                    <Button onClick={() => history.push("/resetpassword/123")} className={classes.button}>Request</Button>
+                    <Button onClick={() => handleSubmit()} className={classes.button}>
+                    {processing ? (
+                            <Loader
+                            type="TailSpin"
+                            color="#00BFFF"
+                            height={40}
+                            width={40}
+                          />
+                        ) : "Request"}
+                    </Button>
 
                     <p className={classes.footer}> &copy; 2021 FastPass Inc | <span className={classes.footerContactUs}>Contact Us</span></p>
                 </Paper>
