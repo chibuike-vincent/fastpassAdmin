@@ -1,19 +1,13 @@
 import React, {useState} from 'react'
 import SearchBar from "material-ui-search-bar"
 
-function SearchBarComponent() {
-    const [state, setState] = useState("")
-
-    const doSomethingWith = (value) => {
-        console.log(value)
-    }
-
+function SearchBarComponent({setValue}) {
+     
     return (
         <div>
             <SearchBar
-                value={state}
-                onChange={(newValue) => setState(newValue)}
-                onRequestSearch={() => doSomethingWith(state)}
+                placeholder="Search by name or email"
+                onChange={(newValue) => setValue(newValue)}
             />
         </div>
     )

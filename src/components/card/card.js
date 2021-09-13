@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {IoIosPeople} from "react-icons/io"
+import { useDispatch, useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,20 +59,24 @@ const useStyles = makeStyles((theme) => ({
 
 function Card() {
     const classes = useStyles();
-    const cardDetail = [
-        {
+    const user = useSelector((state) => state.user);
+    const allUsers = useSelector((state) => state.users);
+    const allSecurities = useSelector((state) => state.securities);
+   
 
-        }
-    ]
+    const actionText = user && user.users.whoYouAre === "Hotel" ? "Total Guests" :
+        user && user.users.whoYouAre === "Corporate office" ? "Total Staff" :
+            user && user.users.whoYouAre === "Residential" ? "Total Family Members" :
+                user && user.users.whoYouAre === "Estate" ? "Total Tenants" : ""
     return (
         <div className={classes.root}>
             <div className={classes.cardContainer1}>
                 <div className={classes.innerCardContainer}>
-                    <h2 className={classes.title}>Total Tenants</h2>
+                    <h2 className={classes.title}>{actionText}</h2>
                     <div className={classes.image_countContainer}>
                     <IoIosPeople size={70} color="#36466F"/>
                     <div className={classes.count}>
-                        <p>3000</p>
+                        <p>{allUsers.users.length}</p>
                     </div>
                     </div>
                 </div>
@@ -83,7 +88,7 @@ function Card() {
                     <div className={classes.image_countContainer}>
                     <IoIosPeople size={70} color="#36466F"/>
                     <div className={classes.count}>
-                        <p>3000</p>
+                        <p>{allSecurities.securities.length}</p>
                     </div>
                     </div>
                 </div>

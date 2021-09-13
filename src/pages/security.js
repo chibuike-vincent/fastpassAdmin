@@ -1,10 +1,25 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Card from "../components/card/card"
 import Table from "../components/securityTable/table"
 import Modal from "../components/modal/modal"
 import Form from "../components/Forms/addSecurity"
+import { useDispatch, useSelector } from 'react-redux'
+import { getSecurities } from "../businessLogic";
+import { ActionCreators } from "../../src/ReduxFile/actions/actionCreator";
 
 function Security() {
+    const dispatch = useDispatch()
+    const allSecurities = useSelector((state) => state.securities);
+
+    useEffect(() => {
+        const securities = async() => {
+            const availableSecurities = await getSecurities()
+            await dispatch( ActionCreators.allSecurityData(availableSecurities.data.securities))
+        }
+        securities()
+    },[])
+
+    console.log(allSecurities, "allSecurities")
     return (
         <div>
             <Card />
@@ -14,7 +29,7 @@ function Security() {
                 </div>
                 <Modal Component={Form} button buttonTitle="Add Security" title="Add Security"/>
             </div>
-            <Table />
+            <Table allSecurities={allSecurities} />
         </div>
     )
 }

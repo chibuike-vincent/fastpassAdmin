@@ -5,10 +5,12 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { Button } from '@material-ui/core';
-import { AdminCreateSecurity } from "../../businessLogic";
+import { AdminCreateSecurity, getSecurities } from "../../businessLogic";
 import { ShowMessage, type } from "../Toaster";
 import { Link, useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
+import { useDispatch, useSelector } from 'react-redux'
+import { ActionCreators } from "../../ReduxFile/actions/actionCreator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddSecurity({handleClose}) {
   const classes = useStyles();
+  const dispatch = useDispatch()
   const [processing, setProcessing] = React.useState(false)
     const [values, setValues] = React.useState({
       firstName: "",
@@ -52,7 +55,8 @@ export default function AddSecurity({handleClose}) {
       });
       if (res.data.message) {
         setProcessing(false)
-        //dispatch( saveAccessToken({payload: res.token}))
+        const availableUsers = await getSecurities()
+        await dispatch( ActionCreators.allSecurityData(availableUsers.data.securities))
         ShowMessage(type.DONE, res.data.message);
         handleClose()
       }else{

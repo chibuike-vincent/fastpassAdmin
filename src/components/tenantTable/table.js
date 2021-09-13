@@ -19,6 +19,7 @@ import Modal from "../modal/modal"
 import VisitorTable from "../visitorTable/table"
 import UpdateTenant from "../Forms/UpdateTenant"
 import Warning from "../DeleteWarning/Warning"
+import moment from "moment"
 
 const useRowStyles = makeStyles({
   root: {
@@ -29,7 +30,7 @@ const useRowStyles = makeStyles({
   },
   tableHead: {
     color:"#fff",
-    backgroundColor:"red"
+    backgroundColor: "#36466F"
   }
 });
 
@@ -49,14 +50,11 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.fullname}
+          {`${row.firstName} ${row.lastName}`}
         </TableCell>
         <TableCell align="right">{row.email}</TableCell>
         <TableCell align="right">{row.phone}</TableCell>
         <TableCell align="right">{row.gender}</TableCell>
-        <TableCell align="right">{row.NOK}</TableCell>
-        <TableCell align="right">{row.occupation}</TableCell>
-        <TableCell align="right">{row.House_No}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -74,7 +72,9 @@ function Row(props) {
               </div>
             </div>
 
-            <Box margin={1}>
+            {
+              !row.visitors.length ? "" : (
+                <Box margin={1}>
               <div style={{ display: "flex" }}>
                 <h2>
                   Visitors
@@ -85,12 +85,13 @@ function Row(props) {
                 <TableHead  >
                   <TableRow >
                     <TableCell className={classes.tableHead}>Name</TableCell>
-                    <TableCell >Email</TableCell>
-                    <TableCell align="right">Phone</TableCell>
-                    <TableCell align="right">Gender</TableCell>
-                    <TableCell align="right">House No</TableCell>
-                    <TableCell align="right">Status</TableCell>
-                    <TableCell align="right">Visit Date</TableCell>
+                    <TableCell className={classes.tableHead}>Email</TableCell>
+                    <TableCell align="right" className={classes.tableHead}>Phone</TableCell>
+                    <TableCell align="right" className={classes.tableHead}>Gender</TableCell>
+                    <TableCell align="right" className={classes.tableHead}>House No</TableCell>
+                    <TableCell align="right" className={classes.tableHead}>Status</TableCell>
+                    <TableCell align="right" className={classes.tableHead}>Time-In</TableCell>
+                    <TableCell align="right" className={classes.tableHead}>Time-Out</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -98,21 +99,24 @@ function Row(props) {
                   {row.visitors.map((visitor) => (
                     <TableRow key={visitor.email} >
                       <TableCell component="th" scope="row">
-                        {visitor.fullname}
+                        {visitor.visitorName}
                       </TableCell>
                       <TableCell>{visitor.email}</TableCell>
-                      <TableCell align="right">{visitor.phone_no}</TableCell>
+                      <TableCell align="right">{visitor.phone}</TableCell>
                       <TableCell align="right">
                         {visitor.gender}
                       </TableCell>
                       <TableCell align="right">
-                        {visitor.house_no}
+                        {visitor.houseNumber}
                       </TableCell>
                       <TableCell align="right">
                         {visitor.status}
                       </TableCell>
                       <TableCell align="right">
-                        {visitor.date}
+                        {moment(visitor.createdAt).format("YYYY-MM-DD HH:MM")}
+                      </TableCell>
+                      <TableCell align="right">
+                        {moment(visitor.updatedAt).format("YYYY-MM-DD HH:MM")}
                       </TableCell>
                      
                     </TableRow>
@@ -120,6 +124,8 @@ function Row(props) {
                 </TableBody>
               </Table>
             </Box>
+              )
+            }
           </Collapse>
         </TableCell>
       </TableRow>
@@ -231,9 +237,9 @@ const rows = [
 
 ]
 
-export default function TenantTable() {
+export default function TenantTable({allUsers}) {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(3);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -243,6 +249,9 @@ export default function TenantTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  console.log(allUsers, 'allUsers')
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -253,14 +262,11 @@ export default function TenantTable() {
             <TableCell align="right">Email</TableCell>
             <TableCell align="right">Phone</TableCell>
             <TableCell align="right">Gender</TableCell>
-            <TableCell align="right">NOK</TableCell>
-            <TableCell align="right">Occupation</TableCell>
-            <TableCell align="right">House No</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
 
-          {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+          {allUsers.users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
             return (
               <Row key={row.name} row={row} />
             );
@@ -272,7 +278,7 @@ export default function TenantTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={allUsers.users.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

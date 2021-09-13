@@ -11,11 +11,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {AiTwotoneSecurityScan} from "react-icons/ai"
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Link, useHistory } from "react-router-dom";
 import {navigations, Secondnavigations} from "../routes/navigations"
+import { ActionCreators } from "../../src/ReduxFile/actions/actionCreator";
 
-import {getCurrentUser} from "../../src/businessLogic"
+import {getCurrentUser, getSecurities, getUsers} from "../../src/businessLogic"
 
 const drawerWidth = 180;
 
@@ -81,17 +83,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MainLayout({children}) {
   const classes = useStyles();
+  const dispatch = useDispatch()
   const [user, setUser] = useState({})
+  const userInfo = useSelector((state) => state.users);
 
   useEffect(() => {
     const activeUser = async() => {
       const user = await getCurrentUser()
+      const availableSecurities = await getSecurities()
       setUser(user)
+      await dispatch( ActionCreators.allSecurityData(availableSecurities.data.securities))
+      await dispatch( ActionCreators.userData(user.data.userData))
     }
-    activeUser()
+  activeUser()
   }, [])
 
  
+  
 
   return (
     <div className={classes.root}>
@@ -128,7 +136,11 @@ export default function MainLayout({children}) {
               <Link to={item.route} className={classes.link}>
                 <ListItem button key={item.name} className={classes.items}>
                 <ListItemIcon className={classes.icon_main}>{item.mainIcon}</ListItemIcon>
-                <ListItemText primary={item.name} className={classes.name} />
+                <ListItemText primary={
+                  item.name === "" && user && user.data && user.data.userData.whoYouAre === "Hotel" ? "Guests" : 
+                  item.name === "" && user && user.data && user.data.userData.whoYouAre === "Corporate office" ? "Staff" : 
+                  item.name === "" && user && user.data && user.data.userData.whoYouAre === "Residential" ? "Family Members" :
+                  item.name === "" && user && user.data && user.data.userData.whoYouAre === "Estate" ? "Tenants" : item.name} className={classes.name} />
                 <ListItemText secondary={item.arrow} className={classes.arrow} />
               </ListItem>
               </Link>

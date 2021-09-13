@@ -16,7 +16,7 @@ import Home from "../pages/home";
 import Overview from "../pages/overview";
 import Login from "../pages/login";
 import SignUp from "../pages/signUp";
-import Tenants from "../pages/tenants";
+import Users from "../pages/Users";
 import Security from "../pages/security";
 import CreateTenants from "../pages/createTenants";
 import CreateSecurity from "../pages/createSecurity";
@@ -35,7 +35,7 @@ export default function Routes() {
           <Switch>
             {/* Protected routes */}
             <DashboardRoute exact path="/dashboard" component={Overview} />
-            <DashboardRoute exact path="/dashboard/tenants" component={Tenants} />
+            <DashboardRoute exact path="/dashboard/users" component={Users} />
             <DashboardRoute exact path="/dashboard/security" component={Security} />
             <DashboardRoute exact path="/dashboard/create_tenants" component={CreateTenants} />
             <DashboardRoute exact path="/dashboard/create_security" component={CreateSecurity} />

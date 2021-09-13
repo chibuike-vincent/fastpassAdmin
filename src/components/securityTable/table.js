@@ -231,7 +231,7 @@ const rows = [
 ]
 
 
-export default function CollapsibleTable() {
+export default function CollapsibleTable({allSecurities}) {
     const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(3);
 
@@ -258,7 +258,7 @@ export default function CollapsibleTable() {
         </TableHead>
         <TableBody>
 
-        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+        {allSecurities.securities.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <Row key={row.email} row={row} />
               );
@@ -270,7 +270,7 @@ export default function CollapsibleTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={allSecurities.securities.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

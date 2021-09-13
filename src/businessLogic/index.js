@@ -76,7 +76,7 @@ export const resetPassword = async (payload) => {
 export const changePassword = async (payload) => {
   try {
     const response = await api.post("/admin/changepassword", payload);
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error);
     return error.message;
@@ -84,9 +84,9 @@ export const changePassword = async (payload) => {
 };
 
 
-export const AdminCreatTenant = async (payload) => {
+export const AdminCreateUser = async (payload) => {
   try {
-    const response = await api.post(`/admin/create_tenant`, payload);
+    const response = await api.post(`/admin/create_user`, payload);
     console.log(response, "rrrrrr")
     return response;
   } catch (error) {
@@ -98,7 +98,6 @@ export const AdminCreatTenant = async (payload) => {
 export const AdminCreateSecurity = async (payload) => {
   try {
     const response = await api.post(`/admin/create_security`, payload);
-    console.log(response, "rrrrrr")
     return response;
   } catch (error) {
     console.log(error);
@@ -106,15 +105,36 @@ export const AdminCreateSecurity = async (payload) => {
   }
 };
 
-export const getUsers = async (sortVal) => {
+export const getUsers = async (Val) => {
   try {
-    const response = await api.get(`/admin/getUsers?sortBy=${sortVal}`);
+    const response = await api.get(`/admin/users?searchValue=${Val}`);
     return response;
   } catch (error) {
     console.log(error);
     return error.message;
   }
 };
+
+export const getVisitors = async (Val) => {
+  try {
+    const response = await api.get(`/admin/visitors?searchValue=${Val}`);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error.message;
+  }
+};
+
+export const getSecurities = async () => {
+  try {
+    const response = await api.get(`/admin/securities`);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error.message;
+  }
+};
+
 
 export const AdminDeleteUser = async (payload) => {
   try {

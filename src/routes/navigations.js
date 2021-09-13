@@ -13,10 +13,10 @@ export const navigations = [
         route: "/dashboard"
     },
     {
-        name: 'Tenants',
+        name: '',
         mainIcon: <IoIosPeople size={30}/>,
         arrow: <FaAngleRight size={15} color="white"/>,
-        route: "/dashboard/tenants"
+        route: "/dashboard/users"
     },
     {
         name: 'Security',

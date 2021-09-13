@@ -5,10 +5,12 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { Button } from '@material-ui/core';
-import { AdminCreatTenant } from "../../businessLogic";
+import { AdminCreateUser, getUsers } from "../../businessLogic";
 import { ShowMessage, type } from "../Toaster";
 import { Link, useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
+import { useDispatch, useSelector } from 'react-redux'
+import { ActionCreators } from "../../ReduxFile/actions/actionCreator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,19 +23,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddTenant({handleClose}) {
+export default function AddTenant({ handleClose }) {
   const classes = useStyles();
-    const [processing, setProcessing] = React.useState(false)
-    const [values, setValues] = React.useState({
-      firstName: "",
-      lastName: "",
-      email:"",
-      NOK: "",
-      phone:"",
-      gender: '',
-      occupation: "",
-      houseNumber: ''
-      });
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user);
+  const [processing, setProcessing] = React.useState(false)
+  const [values, setValues] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    NOK: "",
+    phone: "",
+    gender: '',
+    occupation: "",
+    houseNumber: '',
+    department: "",
+    designation: ""
+  });
 
 
   const handleChange = (prop) => (event) => {
@@ -43,7 +49,7 @@ export default function AddTenant({handleClose}) {
   const handleSubmit = async () => {
     try {
       setProcessing(true)
-      const res = await AdminCreatTenant({
+      const res = await AdminCreateUser({
         firstName: values.firstName,
         lastName: values.lastName,
         phone: values.phone,
@@ -51,14 +57,17 @@ export default function AddTenant({handleClose}) {
         gender: values.gender,
         nextOfKin: values.NOK,
         occupation: values.occupation,
-        houseNumber: values.houseNumber
+        houseNumber: values.houseNumber,
+        department: values.department,
+        designation: values.designation
       });
       if (res.data.message) {
         setProcessing(false)
-        //dispatch( saveAccessToken({payload: res.token}))
+        const availableUsers = await getUsers()
+        await dispatch( ActionCreators.allUserData(availableUsers.data.users))
         ShowMessage(type.DONE, res.data.message);
         handleClose()
-      }else{
+      } else {
         setProcessing(false)
         ShowMessage(type.ERROR, res.data);
       }
@@ -70,17 +79,17 @@ export default function AddTenant({handleClose}) {
 
   const gender = [
     {
-        value:"",
-        label:"Select"
+      value: "",
+      label: "Select"
     },
     {
-        value:"Male",
-        label:"Male"
+      value: "Male",
+      label: "Male"
     },
     {
-      value:"Female",
-      label:"Female"
-  },
+      value: "Female",
+      label: "Female"
+    },
   ]
 
   return (
@@ -137,27 +146,49 @@ export default function AddTenant({handleClose}) {
 
         </Select>
       </FormControl>
-      <TextField
-        id="outlined-basic"
-        label="Next Of Kin"
-        variant="outlined"
-        value={values.NOK}
-        onChange={handleChange('NOK')}
-      />
-      <TextField
-        id="outlined-basic"
-        label="Occupation"
-        variant="outlined"
-        value={values.occupation}
-        onChange={handleChange('occupation')}
-      />
-      <TextField
-        id="outlined-basic"
-        label="House Number"
-        variant="outlined"
-        value={values.houseNumber}
-        onChange={handleChange('houseNumber')}
-      />
+
+      {
+        user && user.users.whoYouAre === "Estate" ? (
+          <>
+            <TextField
+              id="outlined-basic"
+              label="Occupation"
+              variant="outlined"
+              value={values.occupation}
+              onChange={handleChange('occupation')}
+            />
+            <TextField
+              id="outlined-basic"
+              label="House Number"
+              variant="outlined"
+              value={values.houseNumber}
+              onChange={handleChange('houseNumber')}
+            />
+          </>
+        ) : ""
+      }
+
+      {
+        user && user.users.whoYouAre === "Corporate office" ? (
+          <>
+            <TextField
+              id="outlined-basic"
+              label="Department"
+              variant="outlined"
+              value={values.department}
+              onChange={handleChange('department')}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Designation"
+              variant="outlined"
+              value={values.designation}
+              onChange={handleChange('designation')}
+            />
+          </>
+        ) : ""
+      }
+
       <Button onClick={() => handleSubmit()}>{processing ? (
         <Loader
           type="TailSpin"
